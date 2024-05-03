@@ -1,40 +1,27 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js light">
+<html lang="en" class="light" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Filters - Askama</title>
-        
-        
 
 
         <!-- Custom HTML head -->
         
-
-
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#ffffff">
 
-        
         <link rel="icon" href="favicon.svg">
-        
-        
         <link rel="shortcut icon" href="favicon.png">
-        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
-        
         <link rel="stylesheet" href="css/print.css" media="print">
-        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        
         <link rel="stylesheet" href="fonts/fonts.css">
-        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -42,19 +29,18 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        
 
-        
     </head>
-    <body>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">
+        <script>
             var path_to_root = "";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script type="text/javascript">
+        <script>
             try {
                 var theme = localStorage.getItem('mdbook-theme');
                 var sidebar = localStorage.getItem('mdbook-sidebar');
@@ -70,79 +56,104 @@
         </script>
 
         <!-- Set the theme before any content is loaded, prevents flash -->
-        <script type="text/javascript">
+        <script>
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             var html = document.querySelector('html');
-            html.classList.remove('no-js')
             html.classList.remove('light')
             html.classList.add(theme);
-            html.classList.add('js');
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
         </script>
 
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
         <!-- Hide / unhide sidebar before it is displayed -->
-        <script type="text/javascript">
-            var html = document.querySelector('html');
-            var sidebar = 'hidden';
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="askama.html"><strong aria-hidden="true">1.</strong> Askama</a></li><li class="chapter-item expanded "><a href="getting_started.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li class="chapter-item expanded "><a href="creating_templates.html"><strong aria-hidden="true">3.</strong> Creating templates</a></li><li class="chapter-item expanded "><a href="debugging.html"><strong aria-hidden="true">4.</strong> Debugging</a></li><li class="chapter-item expanded "><a href="configuration.html"><strong aria-hidden="true">5.</strong> Configuration</a></li><li class="chapter-item expanded "><a href="template_syntax.html"><strong aria-hidden="true">6.</strong> Template syntax</a></li><li class="chapter-item expanded "><a href="filters.html" class="active"><strong aria-hidden="true">7.</strong> Filters</a></li><li class="chapter-item expanded "><a href="integrations.html"><strong aria-hidden="true">8.</strong> Integrations</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="askama.html"><strong aria-hidden="true">1.</strong> Askama</a></li><li class="chapter-item expanded "><a href="getting_started.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li class="chapter-item expanded "><a href="creating_templates.html"><strong aria-hidden="true">3.</strong> Creating templates</a></li><li class="chapter-item expanded "><a href="debugging.html"><strong aria-hidden="true">4.</strong> Debugging</a></li><li class="chapter-item expanded "><a href="configuration.html"><strong aria-hidden="true">5.</strong> Configuration</a></li><li class="chapter-item expanded "><a href="template_syntax.html"><strong aria-hidden="true">6.</strong> Template syntax</a></li><li class="chapter-item expanded "><a href="filters.html" class="active"><strong aria-hidden="true">7.</strong> Filters</a></li><li class="chapter-item expanded "><a href="integrations.html"><strong aria-hidden="true">8.</strong> Integrations</a></li><li class="chapter-item expanded "><a href="performance.html"><strong aria-hidden="true">9.</strong> Performance</a></li><li class="chapter-item expanded "><a href="template_expansion.html"><strong aria-hidden="true">10.</strong> Template expansion</a></li></ol>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
         </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
 
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                
-                <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
-                        </button>
+                        </label>
                         <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
-                        
                     </div>
 
                     <h1 class="menu-title">Askama</h1>
 
                     <div class="right-buttons">
-                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        
-                        
+
                     </div>
                 </div>
 
-                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -150,10 +161,9 @@
                         </ul>
                     </div>
                 </div>
-                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script type="text/javascript">
+                <script>
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
                     document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
                     Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
@@ -163,7 +173,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#filters" id="filters">Filters</a></h1>
+                        <h1 id="filters"><a class="header" href="#filters">Filters</a></h1>
 <p>Values such as those obtained from variables can be post-processed
 using <strong>filters</strong>.
 Filters are applied to values using the pipe symbol (<code>|</code>) and may
@@ -172,170 +182,317 @@ Note that the pipe symbol must not be surrounded by spaces;
 otherwise, it will be interpreted as the <code>BitOr</code> operator.
 Filters can be chained, in which case the output from one filter
 is passed to the next.</p>
-<pre><code>{{ &quot;HELLO&quot;|lower }}
+<pre><code>{{ "HELLO"|lower }}
 </code></pre>
-<p>Askama has a collection of built-in filters, documented below, but can also include custom filters. Additionally, the <code>json</code> and <code>yaml</code> filters are included in the built-in filters,
-but are disabled by default. Enable them with Cargo features (see below for more information).</p>
-<h2><a class="header" href="#built-in-filters" id="built-in-filters">Built-In Filters</a></h2>
-<h3><a class="header" href="#capitalize" id="capitalize">capitalize</a></h3>
+<p>Askama has a collection of built-in filters, documented below, but can also include custom filters.
+Additionally, the <code>json</code> filter is included in the built-in filters, but is disabled by default.
+Enable it with Cargo features (see below for more information).</p>
+<p><strong>Table of contents</strong></p>
+<ul>
+<li>
+<p><strong><a href="#built-in-filters">Built-in filters</a>:</strong><br />
+<a href="#abs"><code>abs</code></a>,
+<a href="#as_ref"><code>as_ref</code></a>,
+<a href="#capitalize"><code>capitalize</code></a>,
+<a href="#center"><code>center</code></a>,
+<a href="#deref"><code>deref</code></a>,
+<a href="#escape--e"><code>escape|e</code></a>,
+<a href="#filesizeformat"><code>filesizeformat</code></a>,
+<a href="#fmt"><code>fmt</code></a>,
+<a href="#format"><code>format</code></a>,
+<a href="#indent"><code>indent</code></a>,
+<a href="#join"><code>join</code></a>,
+<a href="#linebreaks"><code>linebreaks</code></a>,
+<a href="#linebreaksbr"><code>linebreaksbr</code></a>,
+<a href="#lower--lowercase"><code>lower|lowercase</code></a>,
+<a href="#safe"><code>safe</code></a>,
+<a href="#trim"><code>trim</code></a>,
+<a href="#truncate"><code>truncate</code></a>,
+<a href="#upper--uppercase"><code>upper|uppercase</code></a>,
+<a href="#wordcount"><code>wordcount</code></a></p>
+</li>
+<li>
+<p><strong><a href="#optional--feature-gated-filters">Optional / feature gated filters</a>:</strong><br />
+<a href="#json--tojson"><code>json|tojson</code></a>,</p>
+</li>
+<li>
+<p><strong><a href="#custom-filters">Custom filters</a></strong></p>
+</li>
+</ul>
+<h2 id="built-in-filters"><a class="header" href="#built-in-filters">Built-In Filters</a></h2>
+<h3 id="abs"><a class="header" href="#abs">abs</a></h3>
+<p>Returns the absolute value.</p>
+<pre><code>{{ -2|abs }}
+</code></pre>
+<p>Output:</p>
+<pre><code>2
+</code></pre>
+<h3 id="as_ref"><a class="header" href="#as_ref">as_ref</a></h3>
+<p>Creates a reference to the given argument.</p>
+<pre><code>{{ "a"|as_ref }}
+{{ self.x|as_ref }}
+</code></pre>
+<p>will become:</p>
+<pre><code>&amp;"a"
+&amp;self.x
+</code></pre>
+<h3 id="capitalize"><a class="header" href="#capitalize">capitalize</a></h3>
 <p>Capitalize a value. The first character will be uppercase, all others lowercase:</p>
-<pre><code>{{ &quot;hello&quot;|capitalize }}
+<pre><code>{{ "hello"|capitalize }}
 </code></pre>
 <p>Output:</p>
 <pre><code>Hello
 </code></pre>
-<h3><a class="header" href="#center" id="center">center</a></h3>
+<h3 id="center"><a class="header" href="#center">center</a></h3>
 <p>Centers the value in a field of a given width:</p>
-<pre><code>-{{ &quot;a&quot;|center(5) }}-
+<pre><code>-{{ "a"|center(5) }}-
 </code></pre>
 <p>Output:</p>
 <pre><code>-  a  -
 </code></pre>
-<h3><a class="header" href="#escape--e" id="escape--e">escape | e</a></h3>
-<p>Escapes html characters in strings:</p>
-<pre><code>{{ &quot;Escape &lt;&gt;&amp;&quot;|e }}
+<h3 id="deref"><a class="header" href="#deref">deref</a></h3>
+<p>Dereferences the given argument.</p>
+<pre><code>{% let s = String::from("a")|as_ref %}
+{% if s|deref == String::from("b") %}
+{% endif %}
+</code></pre>
+<p>will become:</p>
+<pre><code>let s = &amp;String::from("a");
+if *s == String::from("b") {}
+</code></pre>
+<h3 id="escape--e"><a class="header" href="#escape--e">escape | e</a></h3>
+<p>Escapes HTML characters in strings:</p>
+<pre><code>{{ "Escape &lt;&gt;&amp;"|e }}
 </code></pre>
 <p>Output:</p>
 <pre><code>Escape &amp;lt;&amp;gt;&amp;amp;
 </code></pre>
-<h3><a class="header" href="#filesizeformat" id="filesizeformat">filesizeformat</a></h3>
+<p>Optionally, it is possible to specify and override which escaper is used.
+Consider a template where the escaper is configured as <a href="creating_templates.html#the-template-attribute"><code>escape = "none"</code></a>.
+However, somewhere escaping using the HTML escaper is desired.
+Then it is possible to override and use the HTML escaper like this:</p>
+<pre><code class="language-jinja">{{ "Don't Escape &lt;&gt;&amp;"|escape }}
+{{ "Don't Escape &lt;&gt;&amp;"|e }}
+
+{{ "Escape &lt;&gt;&amp;"|escape("html") }}
+{{ "Escape &lt;&gt;&amp;"|e("html") }}
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-text">Don't Escape &lt;&gt;&amp;
+Don't Escape &lt;&gt;&amp;
+
+Escape &amp;lt;&amp;gt;&amp;amp;
+Escape &amp;lt;&amp;gt;&amp;amp;
+</code></pre>
+<h3 id="filesizeformat"><a class="header" href="#filesizeformat">filesizeformat</a></h3>
 <p>Returns adequate string representation (in KB, ..) of number of bytes:</p>
 <pre><code>{{ 1000|filesizeformat }}
 </code></pre>
 <p>Output:</p>
 <pre><code>1 KB
 </code></pre>
-<h3><a class="header" href="#format" id="format">format</a></h3>
+<h3 id="fmt"><a class="header" href="#fmt">fmt</a></h3>
 <p>Formats arguments according to the specified format</p>
-<p>The first argument to this filter must be a string literal (as in normal Rust).</p>
-<p>All arguments are passed through to the format!() macro by the Askama code generator.</p>
-<pre><code>{{ &quot;{:?}&quot;|format(var) }}
+<p>The <em>second</em> argument to this filter must be a string literal (as in normal
+Rust). The two arguments are passed through to <a href="https://doc.rust-lang.org/stable/std/macro.format.html"><code>format!()</code></a> by
+the Askama code generator, but the order is swapped to support filter
+composition.</p>
+<pre><code class="language-text">{{ value|fmt("{:?}") }}
 </code></pre>
-<h3><a class="header" href="#indent" id="indent">indent</a></h3>
-<p>Indent newlines with width spaces</p>
-<pre><code>{{ &quot;hello\nfoo\nbar&quot;|indent(4) }}
+<p>As an example, this allows filters to be composed like the following.
+Which is not possible using the <code>format</code> filter.</p>
+<pre><code class="language-text">{{ value|capitalize|fmt("{:?}") }}
+</code></pre>
+<h3 id="format"><a class="header" href="#format">format</a></h3>
+<p>Formats arguments according to the specified format.</p>
+<p>The first argument to this filter must be a string literal (as in normal Rust).</p>
+<p>All arguments are passed through to <a href="https://doc.rust-lang.org/stable/std/macro.format.html"><code>format!()</code></a> by the Askama code generator.</p>
+<pre><code>{{ "{:?}"|format(var) }}
+</code></pre>
+<h3 id="indent"><a class="header" href="#indent">indent</a></h3>
+<p>Indent newlines with width spaces.</p>
+<pre><code>{{ "hello\nfoo\nbar"|indent(4) }}
 </code></pre>
 <p>Output:</p>
 <pre><code>hello
     foo
     bar
 </code></pre>
-<h3><a class="header" href="#join" id="join">join</a></h3>
-<p>Joins iterable into a string separated by provided argument</p>
-<pre><code>array = &amp;[&quot;foo&quot;, &quot;bar&quot;, &quot;bazz&quot;]
+<h3 id="join"><a class="header" href="#join">join</a></h3>
+<p>Joins iterable into a string separated by provided argument.</p>
+<pre><code>array = &amp;["foo", "bar", "bazz"]
 </code></pre>
-<pre><code>{{ array|join(&quot;, &quot;) }}
+<pre><code>{{ array|join(", ") }}
 </code></pre>
 <p>Output:</p>
 <pre><code>foo, bar, bazz
 </code></pre>
-<h3><a class="header" href="#linebreaks" id="linebreaks">linebreaks</a></h3>
-<p>Replaces line breaks in plain text with appropriate HTML</p>
-<p>A single newline becomes an HTML line break <br> and a new line followed by a blank line becomes a paragraph break <p>.</p>
-<pre><code>{{ &quot;hello\nworld\n\nfrom\naskama&quot;|linebreaks }}
+<h3 id="linebreaks"><a class="header" href="#linebreaks">linebreaks</a></h3>
+<p>Replaces line breaks in plain text with appropriate HTML.</p>
+<p>A single newline becomes an HTML line break <code>&lt;br&gt;</code> and a new line followed by a blank line becomes a paragraph break <code>&lt;p&gt;</code>.</p>
+<pre><code>{{ "hello\nworld\n\nfrom\naskama"|linebreaks }}
 </code></pre>
 <p>Output:</p>
 <pre><code>&lt;p&gt;hello&lt;br /&gt;world&lt;/p&gt;&lt;p&gt;from&lt;br /&gt;askama&lt;/p&gt;
 </code></pre>
-<h3><a class="header" href="#linebreaksbr" id="linebreaksbr">linebreaksbr</a></h3>
-<p>Converts all newlines in a piece of plain text to HTML line breaks</p>
-<pre><code>{{ &quot;hello\nworld\n\nfrom\naskama&quot;|linebreaks }}
+<h3 id="linebreaksbr"><a class="header" href="#linebreaksbr">linebreaksbr</a></h3>
+<p>Converts all newlines in a piece of plain text to HTML line breaks.</p>
+<pre><code>{{ "hello\nworld\n\nfrom\naskama"|linebreaks }}
 </code></pre>
 <p>Output:</p>
 <pre><code>hello&lt;br /&gt;world&lt;br /&gt;&lt;br /&gt;from&lt;br /&gt;askama
 </code></pre>
-<h3><a class="header" href="#lower--lowercase" id="lower--lowercase">lower | lowercase</a></h3>
-<p>Converts to lowercase</p>
-<pre><code>{{ &quot;HELLO&quot;|lower }}
+<h3 id="paragraphbreaks"><a class="header" href="#paragraphbreaks">paragraphbreaks</a></h3>
+<p>A new line followed by a blank line becomes <code>&lt;p&gt;</code>, but, unlike <code>linebreaks</code>, single new lines are ignored and no <code>&lt;br/&gt;</code> tags are generated.</p>
+<p>Consecutive double line breaks will be reduced down to a single paragraph break.</p>
+<p>This is useful in contexts where changing single line breaks to line break tags would interfere with other HTML elements, such as lists and nested <code>&lt;div&gt;</code> tags.</p>
+<pre><code>{{ "hello\nworld\n\nfrom\n\n\n\naskama"|paragraphbreaks }}
+</code></pre>
+<p>Output:</p>
+<pre><code>&lt;p&gt;hello\nworld&lt;/p&gt;&lt;p&gt;from&lt;/p&gt;&lt;p&gt;askama&lt;/p&gt;
+</code></pre>
+<h3 id="lower--lowercase"><a class="header" href="#lower--lowercase">lower | lowercase</a></h3>
+<p>Converts to lowercase.</p>
+<pre><code>{{ "HELLO"|lower }}
 </code></pre>
 <p>Output:</p>
 <pre><code>hello
 </code></pre>
-<h3><a class="header" href="#safe" id="safe">safe</a></h3>
-<p>Marks a string (or other Display type) as safe.  By default all strings are escaped according to the format</p>
-<pre><code>{{ &quot;&lt;p&gt;I'm Safe&lt;/p&gt;&quot;|safe }}
+<h3 id="safe"><a class="header" href="#safe">safe</a></h3>
+<p>Marks a string (or other Display type) as safe. By default all strings are escaped according to the format.</p>
+<pre><code>{{ "&lt;p&gt;I'm Safe&lt;/p&gt;"|safe }}
 </code></pre>
 <p>Output:</p>
 <pre><code>&lt;p&gt;I'm Safe&lt;/p&gt;
 </code></pre>
-<h3><a class="header" href="#trim" id="trim">trim</a></h3>
-<p>Strip leading and trailing whitespace</p>
-<pre><code>{{ &quot; hello &quot;|trim }}
+<h3 id="trim"><a class="header" href="#trim">trim</a></h3>
+<p>Strip leading and trailing whitespace.</p>
+<pre><code>{{ " hello "|trim }}
 </code></pre>
 <p>Output:</p>
 <pre><code>hello
 </code></pre>
-<h3><a class="header" href="#truncate" id="truncate">truncate</a></h3>
-<p>Limit string length, appends '...' if truncated</p>
-<pre><code>{{ &quot;hello&quot;|truncate(2) }}
+<h3 id="truncate"><a class="header" href="#truncate">truncate</a></h3>
+<p>Limit string length, appends '...' if truncated.</p>
+<pre><code>{{ "hello"|truncate(2) }}
 </code></pre>
 <p>Output:</p>
 <pre><code>he...
 </code></pre>
-<h3><a class="header" href="#upper--uppercase" id="upper--uppercase">upper | uppercase</a></h3>
-<p>Converts to uppercase</p>
-<pre><code>{{ &quot;hello&quot;|upper }}
+<h3 id="upper--uppercase"><a class="header" href="#upper--uppercase">upper | uppercase</a></h3>
+<p>Converts to uppercase.</p>
+<pre><code>{{ "hello"|upper }}
 </code></pre>
 <p>Output:</p>
 <pre><code>HELLO
 </code></pre>
-<h3><a class="header" href="#wordcount" id="wordcount">wordcount</a></h3>
-<p>Count the words in that string</p>
-<pre><code>{{ &quot;askama is sort of cool&quot;|wordcount }}
+<h3 id="wordcount"><a class="header" href="#wordcount">wordcount</a></h3>
+<p>Count the words in that string.</p>
+<pre><code>{{ "askama is sort of cool"|wordcount }}
 </code></pre>
+<p>Output:</p>
 <pre><code>5
 </code></pre>
-<h2><a class="header" href="#custom-filters" id="custom-filters">Custom Filters</a></h2>
-<p>To define your own filters, simply have a module named filters in scope of the context deriving a <code>Template</code> impl.</p>
-<p>Note that in case of name collision, the built in filters take precedence.</p>
-<pre><pre class="playground"><code class="language-rust">#[derive(Template)]
-#[template(source = &quot;{{ s|myfilter }}&quot;, ext = &quot;txt&quot;)]
+<h2 id="optional--feature-gated-filters"><a class="header" href="#optional--feature-gated-filters">Optional / feature gated filters</a></h2>
+<p>The following filters can be enabled by requesting the respective feature in the Cargo.toml
+<a href="https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html">dependencies section</a>, e.g.</p>
+<pre><code>[dependencies]
+askama = { version = "0.11.2", features = "serde-json" }
+</code></pre>
+<h3 id="json--tojson"><a class="header" href="#json--tojson"><code>json</code> | <code>tojson</code></a></h3>
+<p>Enabling the <code>serde-json</code> feature will enable the use of the <code>json</code> filter.
+This will output formatted JSON for any value that implements the required
+<a href="https://docs.rs/serde/1.*/serde/trait.Serialize.html"><code>Serialize</code></a> trait.
+The generated string does not contain ampersands <code>&amp;</code>, chevrons <code>&lt; &gt;</code>, or apostrophes <code>'</code>.</p>
+<p>To use it in a <code>&lt;script&gt;</code> you can combine it with the safe filter.
+In HTML attributes, you can either use it in quotation marks <code>"{{data|json}}"</code> as is,
+or in apostrophes with the (optional) safe filter <code>'{{data|json|safe}}'</code>.
+In HTML texts the output of e.g. <code>&lt;pre&gt;{{data|json|safe}}&lt;/pre&gt;</code> is safe, too.</p>
+<pre><code>Good: &lt;li data-extra="{{data|json}}"&gt;…&lt;/li&gt;
+Good: &lt;li data-extra='{{data|json|safe}}'&gt;…&lt;/li&gt;
+Good: &lt;pre&gt;{{data|json|safe}}&lt;/pre&gt;
+Good: &lt;script&gt;var data = {{data|json|safe}};&lt;/script&gt;
+
+Bad:  &lt;li data-extra="{{data|json|safe}}"&gt;…&lt;/li&gt;
+Bad:  &lt;script&gt;var data = {{data|json}};&lt;/script&gt;
+Bad:  &lt;script&gt;var data = "{{data|json|safe}}";&lt;/script&gt;
+
+Ugly: &lt;script&gt;var data = "{{data|json}}";&lt;/script&gt;
+Ugly: &lt;script&gt;var data = '{{data|json|safe}}';&lt;/script&gt;
+</code></pre>
+<h2 id="custom-filters"><a class="header" href="#custom-filters">Custom Filters</a></h2>
+<p>To define your own filters, simply have a module named <code>filters</code> in scope of the context deriving a <code>Template</code> impl
+and define the filters as functions within this module.
+The functions must have at least one argument and the return type must be <code>::askama::Result&lt;T&gt;</code>.
+Although there are no restrictions on <code>T</code> for a single filter,
+the final result of a chain of filters must implement <code>Display</code>.</p>
+<p>The arguments to the filters are passed as follows.
+The first argument corresponds to the expression they are applied to.
+Subsequent arguments, if any, must be given directly when calling the filter.
+The first argument may or may not be a reference, depending on the context in which the filter is called.
+To abstract over ownership, consider defining your argument as a trait bound.
+For example, the <code>trim</code> built-in filter accepts any value implementing <code>Display</code>.
+Its signature is similar to <code>fn trim(s: impl std::fmt::Display) -&gt; ::askama::Result&lt;String&gt;</code>.</p>
+<p>Note that built-in filters have preference over custom filters, so, in case of name collision, the built-in filter is applied.</p>
+<h3 id="examples"><a class="header" href="#examples">Examples</a></h3>
+<p>Implementing a filter that replaces all instances of <code>"oo"</code> for <code>"aa"</code>.</p>
+<pre><pre class="playground"><code class="language-rust">use askama::Template;
+
+#[derive(Template)]
+#[template(source = "{{ s|myfilter }}", ext = "txt")]
 struct MyFilterTemplate&lt;'a&gt; {
     s: &amp;'a str,
 }
 
+// Any filter defined in the module `filters` is accessible in your template.
 mod filters {
-    pub fn myfilter(s: &amp;str) -&gt; ::askama::Result&lt;String&gt; {
-        Ok(s.replace(&quot;oo&quot;, &quot;aa&quot;))
+    // This filter does not have extra arguments
+    pub fn myfilter&lt;T: std::fmt::Display&gt;(s: T) -&gt; ::askama::Result&lt;String&gt; {
+        let s = s.to_string();
+        Ok(s.replace("oo", "aa"))
     }
 }
 
 fn main() {
-    let t = MyFilterTemplate { s: &quot;foo&quot; };
-    assert_eq!(t.render().unwrap(), &quot;faa&quot;);
+    let t = MyFilterTemplate { s: "foo" };
+    assert_eq!(t.render().unwrap(), "faa");
+}</code></pre></pre>
+<p>Implementing a filter that replaces all instances of <code>"oo"</code> for <code>n</code> times <code>"a"</code>.</p>
+<pre><pre class="playground"><code class="language-rust">use askama::Template;
+
+#[derive(Template)]
+#[template(source = "{{ s|myfilter(4) }}", ext = "txt")]
+struct MyFilterTemplate&lt;'a&gt; {
+    s: &amp;'a str,
 }
-</code></pre></pre>
-<h2><a class="header" href="#the-json-filter" id="the-json-filter">The <code>json</code> filter</a></h2>
-<p>Enabling the <code>serde-json</code> filter will enable the use of the <code>json</code> filter.
-This will output formatted JSON for any value that implements the required
-<code>Serialize</code> trait.</p>
-<pre><code>{
-  &quot;foo&quot;: &quot;{{ foo }}&quot;,
-  &quot;bar&quot;: {{ bar|json }}
+
+// Any filter defined in the module `filters` is accessible in your template.
+mod filters {
+    // This filter requires a `usize` input when called in templates
+    pub fn myfilter&lt;T: std::fmt::Display&gt;(s: T, n: usize) -&gt; ::askama::Result&lt;String&gt; {
+        let s = s.to_string();
+    	  let mut replace = String::with_capacity(n);
+    	  replace.extend((0..n).map(|_| "a"));
+        Ok(s.replace("oo", &amp;replace))
+    }
 }
-</code></pre>
-<h2><a class="header" href="#the-yaml-filter" id="the-yaml-filter">The <code>yaml</code> filter</a></h2>
-<p>Enabling the <code>serde-yaml</code> filter will enable the use of the <code>yaml</code> filter.
-This will output formatted JSON for any value that implements the required
-<code>Serialize</code> trait.</p>
-<pre><code>{{ foo|yaml }}
-</code></pre>
+
+fn main() {
+    let t = MyFilterTemplate { s: "foo" };
+    assert_eq!(t.render().unwrap(), "faaaa");
+}</code></pre></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                        
                             <a rel="prev" href="template_syntax.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
-                        
 
-                        
-                            <a rel="next" href="integrations.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="integrations.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
-                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -343,49 +500,36 @@ This will output formatted JSON for any value that implements the required
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                
                     <a rel="prev" href="template_syntax.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
-                
 
-                
-                    <a rel="next" href="integrations.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="integrations.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
-                
             </nav>
 
         </div>
 
-        
 
-        
 
-        
 
-        
-        <script type="text/javascript">
+        <script>
             window.playground_copyable = true;
         </script>
-        
 
-        
 
-        
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-        
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
 
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
-        
 
-        
 
+    </div>
     </body>
 </html>
